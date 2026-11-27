@@ -46,8 +46,9 @@ Para cambiar el texto o los objetivos de un programa, simplemente abre el archiv
 
 ---
 
-### 3. ¿Cómo cambiar o actualizar fotografías?
+### 3. ¿Cómo cambiar o actualizar fotografías y videos?
 
+#### Fotografías:
 Las fotos utilizadas en la web están organizadas en:
 👉 **`src/assets/fotos/`**
 
@@ -55,6 +56,20 @@ Para sustituir una fotografía:
 1. Nombra tu nueva foto con el mismo nombre (ej. `hero-comunidad.jpg`, `comedor-comunitario.jpg`, etc.).
 2. Pégala en `src/assets/fotos/` reemplazando la anterior.
 3. El sistema de Astro la convertirá automáticamente a formato ultra ligero WebP optimizando el peso y la velocidad sin perder calidad.
+
+#### Video Institucional:
+El video mostrado en la página principal se encuentra en:
+👉 **`public/videos/comunidad-en-accion.mp4`** (y su portada en `public/videos/comunidad-poster.jpg`).
+
+Para optimizar un nuevo video con `ffmpeg` antes de subirlo:
+```bash
+ffmpeg -y -i "tu-video-original.mp4" \
+  -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2" \
+  -c:v libx264 -preset slow -crf 28 -profile:v main -pix_fmt yuv420p \
+  -movflags +faststart \
+  -c:a aac -b:a 96k -ac 2 \
+  public/videos/comunidad-en-accion.mp4
+```
 
 > [!NOTE]
 > **Protección de imagen de menores**: Recuerda publicar únicamente fotografías tomadas en el marco de las actividades comunitarias de la fundación y sin divulgar datos personales o sensibles.
