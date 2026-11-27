@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- Pieza 1: Verde (Huerta - Superior Izquierda) -->
+  <path d="M 6 8 C 6 6.895 6.895 6 8 6 L 26 6 C 26 10 32 10 32 6 L 32 26 C 28 26 28 32 32 32 L 6 32 Z" fill="#3AB54A"/>
+  <!-- Pieza 2: Rojo (Alimentación - Superior Derecha) -->
+  <path d="M 32 6 C 32 10 38 10 38 6 L 56 6 C 57.105 6 58 6.895 58 8 L 58 26 C 54 26 54 32 58 32 L 32 32 C 32 28 28 28 32 26 Z" fill="#D7273C"/>
+  <!-- Pieza 3: Azul Claro (Deporte - Inferior Izquierda) -->
+  <path d="M 6 32 L 32 32 C 28 32 28 38 32 38 L 32 58 L 8 58 C 6.895 58 6 57.105 6 56 Z" fill="#35A8DF"/>
+  <!-- Pieza 4: Azul Oscuro (Comunidad / Adulto Mayor - Inferior Derecha) -->
+  <path d="M 32 32 L 58 32 L 58 56 C 58 57.105 57.105 58 56 58 L 38 58 C 38 54 32 54 32 58 Z" fill="#2B379B"/>
+</svg>

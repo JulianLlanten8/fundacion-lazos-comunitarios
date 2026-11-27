@@ -1,0 +1,72 @@
+---
+interface Props {
+  valor: number;
+  prefijo?: string;
+  sufijo?: string;
+  duracion?: number; // ms
+  clase?: string;
+}
+
+const { valor, prefijo = '', sufijo = '', duracion = 1800, clase = '' } = Astro.props;
+---
+
+<span
+  class={`contador-animado inline-block font-extrabold tabular-nums ${clase}`}
+  data-target={valor}
+  data-prefijo={prefijo}
+  data-sufijo={sufijo}
+  data-duracion={duracion}
+>
+  {prefijo}{valor.toLocaleString('es-CO')}{sufijo}
+</span>
+
+<script>
+  function animarContador(elemento: HTMLElement) {
+    const target = Number(elemento.dataset.target) || 0;
+    const prefijo = elemento.dataset.prefijo || '';
+    const sufijo = elemento.dataset.sufijo || '';
+    const duracion = Number(elemento.dataset.duracion) || 1500;
+
+    // Respetar prefers-reduced-motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      elemento.textContent = `${prefijo}${target.toLocaleString('es-CO')}${sufijo}`;
+      return;
+    }
+
+    let inicio: number | null = null;
+
+    function paso(timestamp: number) {
+      if (!inicio) inicio = timestamp;
+      const progreso = Math.min((timestamp - inicio) / duracion, 1);
+      // Easing out cubic
+      const factor = 1 - Math.pow(1 - progreso, 3);
+      const valorActual = Math.floor(factor * target);
+
+      elemento.textContent = `${prefijo}${valorActual.toLocaleString('es-CO')}${sufijo}`;
+
+      if (progreso < 1) {
+        requestAnimationFrame(paso);
+      } else {
+        elemento.textContent = `${prefijo}${target.toLocaleString('es-CO')}${sufijo}`;
+      }
+    }
+
+    requestAnimationFrame(paso);
+  }
+
+  const observador = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animarContador(entry.target as HTMLElement);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.25 }
+  );
+
+  document.querySelectorAll('.contador-animado').forEach((el) => {
+    observador.observe(el);
+  });
+</script>

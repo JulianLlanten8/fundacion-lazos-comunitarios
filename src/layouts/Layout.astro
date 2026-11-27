@@ -1,0 +1,109 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { DATOS_FUNDACION } from '../data/fundacion';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+  paginaActual?: string;
+}
+
+const {
+  title = `${DATOS_FUNDACION.nombre} | ${DATOS_FUNDACION.lema}`,
+  description = 'Organización comunitaria sin ánimo de lucro en la comuna 13 de Cali. Seguridad alimentaria, educación ambiental, fútbol y valores y acompañamiento integral al adulto mayor.',
+  image = '/logo.png',
+  canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
+  paginaActual = Astro.url.pathname,
+} = Astro.props;
+
+// Schema JSON-LD para Organización / ONG
+const schemaOrg = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: DATOS_FUNDACION.nombre,
+  alternateName: 'Fundación Lazos Comunitarios Cali',
+  url: 'https://fundacionlazoscomunitarios.org',
+  logo: 'https://fundacionlazoscomunitarios.org/logo.png',
+  description: description,
+  slogan: DATOS_FUNDACION.lema,
+  foundingDate: '2021-01-03',
+  taxID: DATOS_FUNDACION.nit,
+  founder: {
+    '@type': 'Person',
+    name: DATOS_FUNDACION.representanteLegal,
+  },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: DATOS_FUNDACION.ubicacion.direccion,
+    addressLocality: DATOS_FUNDACION.ubicacion.ciudad,
+    addressRegion: DATOS_FUNDACION.ubicacion.departamento,
+    addressCountry: 'CO',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: DATOS_FUNDACION.contacto.telefono,
+    contactType: 'customer support',
+    availableLanguage: ['es'],
+  },
+  sameAs: [
+    DATOS_FUNDACION.contacto.instagram,
+  ],
+};
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#2B379B" />
+
+    <!-- Open Graph / Redes Sociales -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content={DATOS_FUNDACION.nombre} />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <!-- JSON-LD Datos Estructurados -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+  </head>
+  <body class="flex min-h-screen flex-col bg-white text-slate-800 antialiased">
+    <!-- Enlace accesible de salto al contenido -->
+    <a
+      href="#contenido-principal"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-blue focus:px-4 focus:py-2 focus:text-white"
+    >
+      Saltar al contenido principal
+    </a>
+
+    <Header paginaActual={paginaActual} />
+
+    <main id="contenido-principal" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+    <WhatsAppFloat />
+  </body>
+</html>

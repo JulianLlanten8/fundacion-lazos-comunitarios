@@ -1,0 +1,218 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { DATOS_FUNDACION } from '../../data/fundacion';
+import PuzzleIcon from '../../components/PuzzleIcon.astro';
+import { Image } from 'astro:assets';
+
+// Importación de fotos reales para cada programa
+import comedorImg from '../../assets/fotos/comedor-comunitario.jpg';
+import huertaImg from '../../assets/fotos/huerta-comunitaria.jpg';
+import futbolImg from '../../assets/fotos/futbol-valores.jpg';
+import adultoImg from '../../assets/fotos/adulto-mayor-bienestar.jpg';
+
+export async function getStaticPaths() {
+  const programas = await getCollection('programas');
+  return programas.map((programa) => ({
+    params: { slug: programa.slug },
+    props: { programa },
+  }));
+}
+
+interface Props {
+  programa: CollectionEntry<'programas'>;
+}
+
+const { programa } = Astro.props;
+const { Content } = await programa.render();
+
+// Mapeo de fotos locales de alta calidad
+const fotosPorSlug: Record<string, any> = {
+  'seguridad-alimentaria': comedorImg,
+  'educacion-ambiental': huertaImg,
+  'futbol-y-valores': futbolImg,
+  'adulto-mayor': adultoImg,
+};
+
+const fotoPrincipal = fotosPorSlug[programa.slug] || comedorImg;
+
+// Pieza activa del rompecabezas
+const mapeoPieza: Record<string, 'verde' | 'rojo' | 'sky' | 'blue'> = {
+  'seguridad-alimentaria': 'rojo',
+  'educacion-ambiental': 'verde',
+  'futbol-y-valores': 'sky',
+  'adulto-mayor': 'blue',
+};
+
+// Obtener los otros programas para navegación lateral
+const todosProgramas = await getCollection('programas');
+const otrosProgramas = todosProgramas
+  .filter((p) => p.slug !== programa.slug)
+  .sort((a, b) => a.data.orden - b.data.orden);
+---
+
+<Layout
+  title={`${programa.data.titulo} | ${DATOS_FUNDACION.nombre}`}
+  description={programa.data.subtitulo}
+  paginaActual={`/programas/${programa.slug}`}
+>
+  <!-- Encabezado con color temático de la línea -->
+  <section
+    class="relative overflow-hidden py-14 sm:py-20 border-b border-slate-100"
+    style={`background: linear-gradient(180deg, ${programa.data.lineaColor}10 0%, #FFFFFF 100%);`}
+  >
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <a
+          href="/#programas"
+          class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-800 transition-colors mb-4"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>Volver a programas</span>
+        </a>
+
+        <div class="flex items-center gap-3">
+          <PuzzleIcon tamano={24} piezaActiva={mapeoPieza[programa.slug]} />
+          <span
+            class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider"
+            style={`background-color: ${programa.data.lineaColor}20; color: ${programa.data.lineaColor};`}
+          >
+            Línea de Acción #{programa.data.orden}
+          </span>
+        </div>
+
+        <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-brand-dark sm:text-4xl lg:text-5xl text-balance">
+          {programa.data.titulo}
+        </h1>
+
+        <p class="mt-4 text-lg font-medium text-slate-600 leading-relaxed">
+          {programa.data.subtitulo}
+        </p>
+
+        <!-- Píldora de impacto destacado -->
+        <div class="mt-6 inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 shadow-sm">
+          <span class="flex h-2.5 w-2.5 rounded-full" style={`background-color: ${programa.data.lineaColor};`}></span>
+          <span class="text-sm font-bold text-slate-800">
+            {programa.data.impactoDestacado}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenido y barra lateral -->
+  <section class="py-16 sm:py-20 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <!-- Columna principal con contenido Markdown -->
+        <div class="lg:col-span-8 space-y-8">
+          <!-- Foto representativa del programa -->
+          <div class="overflow-hidden rounded-3xl border-4 border-slate-100 shadow-xl">
+            <Image
+              src={fotoPrincipal}
+              alt={programa.data.imagenAlt}
+              width={800}
+              height={480}
+              class="h-[380px] w-full object-cover sm:h-[440px]"
+              loading="eager"
+            />
+            <div class="bg-slate-50 p-4 border-t border-slate-100 text-xs text-slate-500 italic">
+              Fotografía real de actividades comunitarias en el oriente de Cali.
+            </div>
+          </div>
+
+          <!-- Texto descriptivo formateado -->
+          <div class="prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-brand-dark prose-p:text-slate-600 prose-p:leading-relaxed prose-li:text-slate-600">
+            <Content />
+          </div>
+
+          <!-- Banner para apoyar este programa específico -->
+          <div
+            class="mt-12 rounded-2xl p-8 border"
+            style={`background-color: ${programa.data.lineaColor}08; border-color: ${programa.data.lineaColor}30;`}
+          >
+            <h3 class="text-xl font-bold text-brand-dark">
+              ¿Deseas apoyar este programa?
+            </h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+              Puedes realizar una donación directa por Nequi, aportar insumos o sumarte como voluntario para esta línea de acción.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-4">
+              <a
+                href="/dona"
+                class="inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90 touch-target"
+                style={`background-color: ${programa.data.lineaColor};`}
+              >
+                Donar para este programa
+              </a>
+              <a
+                href={DATOS_FUNDACION.contacto.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex h-11 items-center justify-center rounded-full border border-slate-300 bg-white px-6 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 touch-target"
+              >
+                Consultar por WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra lateral: Ficha y otros programas -->
+        <div class="lg:col-span-4 space-y-8">
+          <!-- Ficha de Resumen -->
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">
+              Ficha Técnica
+            </h3>
+            <dl class="mt-4 space-y-4 text-sm divide-y divide-slate-200">
+              <div class="pt-2">
+                <dt class="font-semibold text-slate-700">Enfoque Estratégico</dt>
+                <dd class="mt-1 text-slate-600 leading-relaxed">{programa.data.enfoque}</dd>
+              </div>
+              <div class="pt-3">
+                <dt class="font-semibold text-slate-700">Territorio</dt>
+                <dd class="mt-1 text-slate-600">Barrio Los Lagos I, La Paz y El Retiro (Comuna 13, Cali)</dd>
+              </div>
+              <div class="pt-3">
+                <dt class="font-semibold text-slate-700">Población Objetivo</dt>
+                <dd class="mt-1 text-slate-600">Niños, niñas, jóvenes, lideresas y adultos mayores en situación de vulnerabilidad</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Otros Programas -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">
+              Otras Líneas de Acción
+            </h3>
+            <div class="mt-4 space-y-3">
+              {
+                otrosProgramas.map((otro) => (
+                  <a
+                    href={`/programas/${otro.slug}`}
+                    class="group flex items-center justify-between rounded-xl border border-slate-100 p-3 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                  >
+                    <div class="flex items-center gap-3">
+                      <span
+                        class="h-2.5 w-2.5 rounded-full"
+                        style={`background-color: ${otro.data.lineaColor};`}
+                      ></span>
+                      <span class="text-sm font-semibold text-slate-700 group-hover:text-brand-blue">
+                        {otro.data.titulo}
+                      </span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,75 @@
+---
+import type { LineaAccion } from '../data/fundacion';
+import PuzzleIcon from './PuzzleIcon.astro';
+
+interface Props {
+  linea: LineaAccion;
+}
+
+const { linea } = Astro.props;
+
+// Mapeo de la pieza activa en el logo
+const mapeoPieza: Record<string, 'verde' | 'rojo' | 'sky' | 'blue'> = {
+  'seguridad-alimentaria': 'rojo',
+  'educacion-ambiental': 'verde',
+  'futbol-y-valores': 'sky',
+  'adulto-mayor': 'blue',
+};
+---
+
+<article
+  class="group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+  style={`border-color: ${linea.color}33;`}
+>
+  <!-- Barra superior indicadora de color -->
+  <div class="absolute left-0 top-0 h-2 w-full" style={`background-color: ${linea.color};`}></div>
+
+  <div>
+    <!-- Encabezado con pieza de rompecabezas -->
+    <div class="flex items-center justify-between gap-4">
+      <div
+        class="flex h-12 w-12 items-center justify-center rounded-xl"
+        style={`background-color: ${linea.color}15; color: ${linea.color};`}
+      >
+        <PuzzleIcon tamano={28} piezaActiva={mapeoPieza[linea.slug]} />
+      </div>
+      <span
+        class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider"
+        style={`background-color: ${linea.color}15; color: ${linea.color};`}
+      >
+        Línea de acción
+      </span>
+    </div>
+
+    <!-- Título y subtítulo -->
+    <h3 class="mt-5 text-xl font-bold tracking-tight text-brand-dark group-hover:text-brand-blue transition-colors">
+      <a href={`/programas/${linea.slug}`} class="focus:outline-none">
+        <span class="absolute inset-0" aria-hidden="true"></span>
+        {linea.titulo}
+      </a>
+    </h3>
+    <p class="mt-1 text-sm font-medium text-slate-500">
+      {linea.subtitulo}
+    </p>
+
+    <!-- Resumen -->
+    <p class="mt-4 text-sm text-slate-600 leading-relaxed">
+      {linea.resumen}
+    </p>
+  </div>
+
+  <!-- Pie de tarjeta con llamado a la acción -->
+  <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+    <span class="text-sm font-semibold" style={`color: ${linea.color};`}>
+      Conocer programa
+    </span>
+    <span
+      class="flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-200 group-hover:translate-x-1"
+      style={`background-color: ${linea.color}15; color: ${linea.color};`}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </span>
+  </div>
+</article>
