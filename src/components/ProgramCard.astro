@@ -18,17 +18,17 @@ const mapeoPieza: Record<string, 'verde' | 'rojo' | 'sky' | 'blue'> = {
 ---
 
 <article
-  class="group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+  class="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover-lift"
   style={`border-color: ${linea.color}33;`}
 >
-  <!-- Barra superior indicadora de color -->
-  <div class="absolute left-0 top-0 h-2 w-full" style={`background-color: ${linea.color};`}></div>
+  <!-- Barra superior indicadora de color con animación de ancho -->
+  <div class="absolute left-0 top-0 h-2 w-full transition-all duration-300 group-hover:h-2.5" style={`background-color: ${linea.color};`}></div>
 
   <div>
     <!-- Encabezado con pieza de rompecabezas -->
     <div class="flex items-center justify-between gap-4">
       <div
-        class="flex h-12 w-12 items-center justify-center rounded-xl"
+        class="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
         style={`background-color: ${linea.color}15; color: ${linea.color};`}
       >
         <PuzzleIcon tamano={28} piezaActiva={mapeoPieza[linea.slug]} />
