@@ -78,7 +78,7 @@ import PuzzleIcon from '../components/PuzzleIcon.astro';
               href={`${DATOS_FUNDACION.contacto.whatsapp}&text=Hola%2C%20acabo%20de%20realizar%20una%20donaci%C3%B3n%20por%20Nequi%20y%20quiero%20enviar%20mi%20comprobante`}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex h-12 w-full items-center justify-center rounded-full bg-brand-red font-semibold text-white transition-colors hover:bg-red-700 touch-target shadow-sm"
+              class="btn-celebrar-donacion flex h-12 w-full items-center justify-center rounded-full bg-brand-red font-semibold text-white transition-colors hover:bg-red-700 touch-target shadow-sm"
             >
               Enviar comprobante por WhatsApp
             </a>
@@ -125,7 +125,7 @@ import PuzzleIcon from '../components/PuzzleIcon.astro';
               href={`${DATOS_FUNDACION.contacto.whatsapp}&text=Hola%2C%20quiero%20coordinar%20una%20entrega%20de%20donaci%C3%B3n%20en%20especie`}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex h-12 w-full items-center justify-center rounded-full border border-slate-300 bg-white font-semibold text-slate-700 transition-colors hover:bg-slate-50 touch-target"
+              class="btn-celebrar-donacion flex h-12 w-full items-center justify-center rounded-full border border-slate-300 bg-white font-semibold text-slate-700 transition-colors hover:bg-slate-50 touch-target"
             >
               Coordinar entrega en sede
             </a>
@@ -172,7 +172,7 @@ import PuzzleIcon from '../components/PuzzleIcon.astro';
               href={`${DATOS_FUNDACION.contacto.whatsapp}&text=Hola%2C%20quiero%20postularme%20como%20voluntario%20de%20la%20Fundaci%C3%B3n`}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex h-12 w-full items-center justify-center rounded-full bg-brand-blue font-semibold text-white transition-colors hover:bg-blue-900 touch-target"
+              class="btn-celebrar-donacion flex h-12 w-full items-center justify-center rounded-full bg-brand-blue font-semibold text-white transition-colors hover:bg-blue-900 touch-target"
             >
               Postularme como voluntario
             </a>
@@ -217,27 +217,42 @@ import PuzzleIcon from '../components/PuzzleIcon.astro';
 </Layout>
 
 <script>
-  function setupCopiado() {
-    const btn = document.getElementById('btn-copiar-nequi');
+  import { celebrarDonacion } from '../utils/celebration';
+
+  function setupDonaciones() {
+    // Botón de copiar Nequi
+    const btnCopy = document.getElementById('btn-copiar-nequi');
     const textCopy = document.getElementById('text-copy');
-    if (btn && textCopy) {
-      btn.addEventListener('click', async () => {
-        const numero = btn.dataset.numero || '';
+
+    if (btnCopy && textCopy) {
+      btnCopy.addEventListener('click', async (e) => {
+        const numero = btnCopy.dataset.numero || '';
         try {
           await navigator.clipboard.writeText(numero.replace(/\s+/g, ''));
           const original = textCopy.textContent;
           textCopy.textContent = '¡Copiado con éxito! ✓';
-          btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+          btnCopy.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+
+          // Celebración estilo Instagram + Confetti
+          celebrarDonacion(e, '¡Número copiado! Gracias por sembrar esperanza con tu donación ❤️');
+
           setTimeout(() => {
             textCopy.textContent = original;
-            btn.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-400');
-          }, 2000);
-        } catch (e) {
-          console.error('Error al copiar', e);
+            btnCopy.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-400');
+          }, 2500);
+        } catch (err) {
+          console.error('Error al copiar', err);
         }
       });
     }
+
+    // Botones de acción de donación (WhatsApp / Especie / Voluntariado)
+    document.querySelectorAll('.btn-celebrar-donacion').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        celebrarDonacion(e as MouseEvent, '¡Gracias por dar este paso de amor y solidaridad! ❤️');
+      });
+    });
   }
 
-  document.addEventListener('astro:page-load', setupCopiado);
+  document.addEventListener('astro:page-load', setupDonaciones);
 </script>

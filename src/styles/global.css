@@ -72,6 +72,45 @@
     transform: translateY(0);
   }
 
+  /* Animaciones de celebración de donación (estilo Instagram + Confetti) */
+  @keyframes float-heart {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.3);
+    }
+    25% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.35);
+    }
+    50% {
+      opacity: 1;
+      transform: translate(-50%, -70px) scale(1.05);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -140px) scale(0.8);
+    }
+  }
+
+  .animate-corazon {
+    animation: float-heart 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes toast-slide-down {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -16px);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  .animate-slide-down {
+    animation: toast-slide-down 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal {
       opacity: 1 !important;
@@ -80,6 +119,10 @@
     }
     .hover-lift:hover {
       transform: none !important;
+    }
+    .animate-corazon,
+    .animate-slide-down {
+      animation: none !important;
     }
   }
 }

@@ -51,7 +51,7 @@ import futbolImg from '../assets/fotos/futbol-equipo.jpg';
           <div class="flex flex-col gap-3.5 sm:flex-row sm:justify-center lg:justify-start pt-2">
             <a
               href="/dona"
-              class="inline-flex h-12 items-center justify-center rounded-full bg-brand-red px-8 text-base font-semibold text-white shadow-md transition-all duration-200 hover:bg-red-700 hover:shadow-lg focus-visible:ring-4 focus-visible:ring-red-400 touch-target"
+              class="btn-celebrar-donacion inline-flex h-12 items-center justify-center rounded-full bg-brand-red px-8 text-base font-semibold text-white shadow-md transition-all duration-200 hover:bg-red-700 hover:shadow-lg focus-visible:ring-4 focus-visible:ring-red-400 touch-target"
             >
               <span>Dona hoy</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -321,7 +321,7 @@ import futbolImg from '../assets/fotos/futbol-equipo.jpg';
         <div class="flex flex-col sm:flex-row gap-4 shrink-0">
           <a
             href="/dona"
-            class="inline-flex h-12 items-center justify-center rounded-full bg-brand-red px-7 text-base font-semibold text-white shadow-md transition-all hover:bg-red-700 hover:shadow-lg focus-visible:ring-4 focus-visible:ring-red-300 touch-target"
+            class="btn-celebrar-donacion inline-flex h-12 items-center justify-center rounded-full bg-brand-red px-7 text-base font-semibold text-white shadow-md transition-all hover:bg-red-700 hover:shadow-lg focus-visible:ring-4 focus-visible:ring-red-300 touch-target"
           >
             Donar por Nequi / Especie
           </a>
@@ -336,3 +336,17 @@ import futbolImg from '../assets/fotos/futbol-equipo.jpg';
     </div>
   </section>
 </Layout>
+
+<script>
+  import { celebrarDonacion } from '../utils/celebration';
+
+  function setupCelebracionInicio() {
+    document.querySelectorAll('.btn-celebrar-donacion').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        celebrarDonacion(e as MouseEvent, '¡Gracias por apoyar a nuestra comunidad! ❤️');
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupCelebracionInicio);
+</script>
