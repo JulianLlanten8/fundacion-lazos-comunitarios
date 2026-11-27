@@ -2,6 +2,4 @@ assets-origen
 assets-origen/
 .git
 .agents
-*.MOV
-*.mp4
-*.HEIC
+
